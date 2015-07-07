@@ -5,8 +5,10 @@
                 body { padding: 0 15px 0 0; }
                 body, input, select { font-family: arial; font-size: 12px; }
                 a { color: #000000; text-decoration: none; }
-                img, input { display: none; }
+                img { display: none; }
+								
                 a#toggleAllColumns, a#toggleAllUsers { text-decoration: underline; }
+								.menuRow { margin-bottom: 5px; }
 
                 /* table styles */
                 table { border: 1px solid #CCC; border-collapse: collapse; }
@@ -27,8 +29,9 @@
       </head>
     <body>
         <div id="menu" style="display: none;">
-            View: <span id="viewDropdown"></span><br />
-            Show: <a href="#" id="toggleAllColumns">All Columns</a> &bull; <a href="#" id="toggleAllUsers">All Users</a>
+            <div class="menuRow">View: <span id="viewDropdown"></span></div>
+            <div class="menuRow">Show: <a href="#" id="toggleAllColumns">All Columns</a> - <a href="#" id="toggleAllUsers">All Users</a></div>
+						<div class="menuRow">Filter: <input type="text" id="txtFilter" /> <span id="spFilterStatus"></span></div>
         </div>
         <span id="loading">Loading...</span>
         <div id="users" style="display: none;"></div>

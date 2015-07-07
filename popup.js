@@ -3,7 +3,8 @@ var sDomain = "";
 
 $(function()
 {
-    chrome.tabs.getSelected(null, function(tab) {
+    chrome.tabs.getSelected(null, function(tab)
+		{
         handleSelectedTab(tab.url);
     });
 
@@ -37,8 +38,11 @@ $(function()
         }
         return false;
     });
+		
+		AttachFilterHandling();
 
-    function handleSelectedTab(_TabURL) {
+    function handleSelectedTab(_TabURL)
+		{
       sTabURL = _TabURL;
       sDomain = sTabURL.substring(0, sTabURL.indexOf(".com")+4);
       if (sDomain.match(/\.visual\.force\.com/)) {
@@ -47,6 +51,35 @@ $(function()
       }
       RequestUsers("");
     }
+		
+		function AttachFilterHandling()
+		{
+			var typingTimer;
+			var doneTypingInterval = 250;
+			
+			$("#txtFilter").keyup(function()
+			{
+				clearTimeout(typingTimer);
+				typingTimer = setTimeout(doneTyping, doneTypingInterval);
+			});
+			
+			function doneTyping ()
+			{
+				var sFilterText = $("#txtFilter").val();
+				$("#spFilterStatus").text("Filtering");
+				var $trData = $("div#users table.list tr.dataRow");
+				if (sFilterText != "")
+				{
+					//make case insensitive
+					$trData.hide().filter(":contains('" + sFilterText + "')").show();
+				}
+				else
+				{
+					$trData.show();
+				}
+				$("#spFilterStatus").text("");
+			}
+		}
     
     function RequestUsers(sViewId)
     {
@@ -69,7 +102,8 @@ $(function()
         });
     }
 
-    function HideColumns($table) {
+    function HideColumns($table)
+		{
         //only show first x columns?
         $("tr", $table).each(function(){
             // use a class so we can hide these while toggling rows on/off
