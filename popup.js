@@ -8,10 +8,6 @@ $(function()
         handleSelectedTab(tab.url);
     });
 
-    // Moved these out of the DisplayUsers() as new jQuery
-    // will bind multiple click events causing odd behavior
-    // for every other view selected...
-
     //button to show all columns
     $("#toggleAllColumns").click(function()
     {
@@ -22,19 +18,6 @@ $(function()
         } else {
             HideColumns($("table.list"));
             $(this).text("All Columns");
-        }
-        return false;
-    });
-
-    $("#toggleAllUsers").click(function()
-    {
-        console.log("click");
-        if ($('#toggleAllUsers:contains("Login")').length > 0) {
-            $("td.actionColumn:not('.loginRow')").parent().hide();
-            $(this).text("All Users");
-        } else {
-            $("td.actionColumn:not('.loginRow')").parent().show();
-            $(this).text("Login Users");
         }
         return false;
     });
@@ -54,6 +37,11 @@ $(function()
 		
 		function AttachFilterHandling()
 		{
+			//case insensitive 'contains'
+			jQuery.expr[':'].containsCI = function(a, i, m) {
+			 return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+			};
+			
 			var typingTimer;
 			var doneTypingInterval = 250;
 			
@@ -70,8 +58,7 @@ $(function()
 				var $trData = $("div#users table.list tr.dataRow");
 				if (sFilterText != "")
 				{
-					//make case insensitive
-					$trData.hide().filter(":contains('" + sFilterText + "')").show();
+					$trData.hide().filter(":containsCI('" + sFilterText + "')").show();
 				}
 				else
 				{
@@ -158,8 +145,7 @@ $(function()
         
         //Hide users who we can't login as and
         //clear out action column for users that didn't have login link
-        $("td.actionColumn:not('.loginRow')").empty().parent().hide();
-        $("#toggleAllUsers").text("All Users");
+        $("td.actionColumn:not('.loginRow')").empty();
         $("#toggleAllColumns").text("All Columns");
         
         //disable all links except login link
@@ -170,6 +156,8 @@ $(function()
         
         $("#loading").hide();
         $("#menu, #users").show();
+				
+				$("#txtFilter").focus();
         
         //set width of table to try and prevent the popup from squishing the table
         $("body").width("800");

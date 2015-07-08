@@ -7,7 +7,7 @@
                 a { color: #000000; text-decoration: none; }
                 img { display: none; }
 								
-                a#toggleAllColumns, a#toggleAllUsers { text-decoration: underline; }
+                a#toggleAllColumns { text-decoration: underline; }
 								.menuRow { margin-bottom: 5px; }
 
                 /* table styles */
@@ -30,7 +30,7 @@
     <body>
         <div id="menu" style="display: none;">
             <div class="menuRow">View: <span id="viewDropdown"></span></div>
-            <div class="menuRow">Show: <a href="#" id="toggleAllColumns">All Columns</a> - <a href="#" id="toggleAllUsers">All Users</a></div>
+            <div class="menuRow">Show: <a href="#" id="toggleAllColumns">All Columns</a></div>
 						<div class="menuRow">Filter: <input type="text" id="txtFilter" /> <span id="spFilterStatus"></span></div>
         </div>
         <span id="loading">Loading...</span>
