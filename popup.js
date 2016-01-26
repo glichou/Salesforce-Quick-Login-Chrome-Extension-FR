@@ -1,5 +1,7 @@
 var sTabURL = "";
 var sDomain = "";
+var lsr = 0; // used to determine current start number for existing page by sort
+var pageSize = 1000; // max size is 1000
 
 $(function()
 {
@@ -21,7 +23,20 @@ $(function()
         }
         return false;
     });
-		
+
+    $(document).on("click", "#quickLoginChrome div#navigationButtons a", function() {
+      var $ddlView = $("#quickLoginChrome select#fcf");
+      if ( $(this).html().toLowerCase().indexOf("next") >= 0 ) {
+        lsr += pageSize;
+      } else {
+        lsr -= pageSize;
+      }
+
+      $("#quickLoginChrome #users").empty();
+      $("#quickLoginChrome #loading").show();
+      RequestUsers($ddlView.val(), lsr);
+    });
+
 		AttachFilterHandling();
 
     function handleSelectedTab(_TabURL)
@@ -34,23 +49,23 @@ $(function()
       }
       RequestUsers("");
     }
-		
+
 		function AttachFilterHandling()
 		{
 			//case insensitive 'contains'
 			jQuery.expr[':'].containsCI = function(a, i, m) {
 			 return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
 			};
-			
+
 			var typingTimer;
 			var doneTypingInterval = 250;
-			
+
 			$("#txtFilter").keyup(function()
 			{
 				clearTimeout(typingTimer);
 				typingTimer = setTimeout(doneTyping, doneTypingInterval);
 			});
-			
+
 			function doneTyping ()
 			{
 				var sFilterText = $("#txtFilter").val();
@@ -67,14 +82,33 @@ $(function()
 				$("#spFilterStatus").text("");
 			}
 		}
-    
-    function RequestUsers(sViewId)
+
+    function RequestUsers(sViewId, startNum)
     {
         var sFilter = (sViewId !== "") ? "fcf="+sViewId+"&" : "";
-        var sUsersPage = sDomain+"/005?"+sFilter+"rowsperpage=1000";
+        var sLsr = (Number.isInteger(startNum) ? startNum : 0);
+        var sUsersPage = sDomain+"/005?"+sFilter+"rowsperpage=" + pageSize + "&lsr=" + sLsr;
         $.get(sUsersPage, function(data)
         {
             html = (new DOMParser()).parseFromString(data, "text/html");
+
+            // Figure out if there are previous/next links
+            var $navigationButtons = $("#quickLoginChrome #navigationButtons");
+            $navigationButtons.empty();
+            var first = true;
+            $(".listElementBottomNav div.next a", html).each(function() {
+              var $this = $(this);
+              var href = $this.attr("href");
+              $this.attr("href", "#");
+
+              if (!first) {
+                $navigationButtons.append(" | ");
+              } else {
+                first = false;
+              }
+              $navigationButtons.append($this);
+            });
+
             $("img, #allBox", html).remove();
             // Removing the attributes prevents some errors in the console
             $("tr", html).removeAttr('onblur').removeAttr('onmouseout').
@@ -85,6 +119,7 @@ $(function()
                     function() {
                         $(this).removeClass('highlight');
                     });
+
             DisplayUsers(html);
         });
     }
@@ -99,7 +134,7 @@ $(function()
             $(this).children(':gt(3)').addClass('off');
         });
     }
-    
+
     function DisplayUsers(data)
     {
         var $ddlView = $("select#fcf", data);
@@ -110,24 +145,24 @@ $(function()
         {
             // When we select a new set of users, clear the display
             $("#users").empty();
-            $("#loading").show();                   
+            $("#loading").show();
             RequestUsers($(this).val());
         });
-        
+
         var $table = $("div.setupBlock table.list", data);
         HideColumns($table);
 
         $("#users").append($table);
-        
+
         //handle login links
         $("td.actionColumn a:contains('Login')", $table).each(function()
-        {                   
+        {
             $login = $(this);
-            
+
             //flag the login links and remove other action cell elements (edit link, checkbox)
             $login.addClass("loginLink")
             .parent().addClass("loginRow").html("").append($login);
-            
+
             //update login url to set target and return URL to the current url
             var sLogin = $login.attr("href");
             //strip off the retURL and targetURL
@@ -142,23 +177,23 @@ $(function()
             chrome.tabs.update(null, {url: $(this).attr("href"), active: true});
             return false;
         });
-        
+
         //Hide users who we can't login as and
         //clear out action column for users that didn't have login link
         $("td.actionColumn:not('.loginRow')").empty();
         $("#toggleAllColumns").text("All Columns");
-        
+
         //disable all links except login link
         $("a:not('.loginLink')", $table).click(function()
         {
             return false;
         });
-        
+
         $("#loading").hide();
         $("#menu, #users").show();
-				
+
 				$("#txtFilter").focus();
-        
+
         //set width of table to try and prevent the popup from squishing the table
         $("body").width("800");
         $table.width($table.outerWidth());
