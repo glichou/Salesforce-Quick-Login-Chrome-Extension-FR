@@ -24,6 +24,19 @@ $(function()
         return false;
     });
 
+    $("#quickLoginChrome #toggleLoginAsFilter").change(function(event) {
+      var checked = event.target.checked;
+
+      $('td.actionColumn').each(function() {
+        var $this = $(this);
+        if ( checked && ! $this.hasClass('loginRow') ) {
+          $this.parent().hide();
+        } else {
+          $this.parent().show();
+        }
+      });
+    });
+
     $(document).on("click", "#quickLoginChrome div#navigationButtons a", function() {
       var $ddlView = $("#quickLoginChrome select#fcf");
       if ( $(this).html().toLowerCase().indexOf("next") >= 0 ) {
