@@ -1,7 +1,7 @@
 var sTabURL = "";
 var sDomain = "";
 var lsr = 0; // used to determine current start number for existing page by sort
-var pageSize = 1000; // max size is 1000
+var pageSize = 20; // max size is 1000
 
 $(function()
 {
@@ -45,6 +45,9 @@ $(function()
         lsr -= pageSize;
       }
 
+			//keep the current users width so the popup window doesn't become skinny when the table
+			//is empty and then wide again when the table is reloaded
+			$("#users").css("width", $("#users").outerWidth());
       $("#quickLoginChrome #users").empty();
       $("#quickLoginChrome #loading").show();
       RequestUsers($ddlView.val(), lsr);
@@ -149,14 +152,22 @@ $(function()
     }
 
     function DisplayUsers(data)
-    {
-        var $ddlView = $("select#fcf", data);
+    {				
+				//reset certain menu controls
+				$("#txtFilter").val("");
+				$("#toggleLoginAsFilter").attr("checked", false);
+				
+				var $ddlView = $("select#fcf", data);
         // Removing the attribute prevents some errors in the console
         $ddlView.removeAttr("onchange");
         $("#viewDropdown").empty().append($ddlView);
         $ddlView.change(function()
         {
-            // When we select a new set of users, clear the display
+
+						//keep the current users width so the popup window doesn't become skinny when the table
+						//is empty and then wide again when the table is reloaded
+						$("#users").css("width", $("#users").outerWidth());
+						// When we select a new set of users, clear the display
             $("#users").empty();
             $("#loading").show();
             RequestUsers($(this).val());
@@ -201,9 +212,23 @@ $(function()
         {
             return false;
         });
+				
+				//uncheck the Show Only Users With Login checkbox on every new load of users
+				//since it has to be clicked every time
+				//also hide the checkbox option if every user has Login links since the checkbox
+				//would not do anything
+				if ($("td.actionColumn:not(.loginRow)").length > 0)
+				{
+					$(".loginUsersOnlyRow").show();
+				}
+				else
+				{
+					$(".loginUsersOnlyRow").hide();
+				}
 
         $("#loading").hide();
-        $("#menu, #users").show();
+        $("#menu").show();
+				$("#users").css("width", "auto");
 
 				$("#txtFilter").focus();
 
