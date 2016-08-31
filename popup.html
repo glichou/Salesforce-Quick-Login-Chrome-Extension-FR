@@ -3,8 +3,8 @@
       <head>
             <style>
                 body { padding: 0 15px 0 0; }
-                body, input, select { font-family: arial; font-size: 12px; }
-                a { color: #000000; text-decoration: none; }
+                body, input, select { font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+                a { color: #000000; text-decoration: none; cursor: default;}
                 img { display: none; }
 
                 a#toggleAllColumns { text-decoration: underline; }
@@ -20,7 +20,7 @@
                 td.actionColumn a.loginLink:hover { text-decoration: underline; cursor: pointer; }
                 tr.dataRow td, tr.dataRow th { padding: 4px 5px 4px 5px; border: 1px solid #D4DADC; border-width: 0 0 1px 0; }
                 tr.highlight { background-color: #e3f3ff;}
-                td a, th a { cursor: default; }
+                th a:hover { text-decoration: underline; cursor: pointer; }
                 .off { display: none; }
             </style>
             <script src="jquery.min.js"></script>

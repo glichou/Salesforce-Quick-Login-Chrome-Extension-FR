@@ -190,9 +190,21 @@ $(function()
             sLogin = sDomain + sLogin;
 
             $login.attr("href", sLogin);
-        })
-        .click(function()
-        {
+        }).click(function() {
+            //update the main browser tab (not the popup) and make the main browser tab
+            //active which will close the popup
+            chrome.tabs.update(null, {url: $(this).attr("href"), active: true});
+            return false;
+        });
+
+        $("th a", $table).each(function() {
+            var $this = $(this);
+
+            var href = $this.attr('href');
+            if (!href.startsWith('https://') && href.startsWith('/')) {
+                $this.attr("href", sDomain + href);
+            }
+        }).click(function(){
             //update the main browser tab (not the popup) and make the main browser tab
             //active which will close the popup
             chrome.tabs.update(null, {url: $(this).attr("href"), active: true});
