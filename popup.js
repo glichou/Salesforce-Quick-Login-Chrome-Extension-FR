@@ -194,6 +194,7 @@ $(function()
             //update the main browser tab (not the popup) and make the main browser tab
             //active which will close the popup
             chrome.tabs.update(null, {url: $(this).attr("href"), active: true});
+            window.close();
             return false;
         });
 
@@ -208,6 +209,7 @@ $(function()
             //update the main browser tab (not the popup) and make the main browser tab
             //active which will close the popup
             chrome.tabs.update(null, {url: $(this).attr("href"), active: true});
+            window.close();
             return false;
         });
 
