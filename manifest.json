@@ -10,6 +10,6 @@
       "default_title": "Quickly Login As Another User",
       "default_popup": "popup.html"
    },
-   "permissions": [ "tabs", "https://*.salesforce.com/", "https://*.visual.force.com/" ],
+   "permissions": [ "tabs", "https://*.salesforce.com/", "https://*.visual.force.com/", "https://*.lightning.force.com/" ],
    "version": "1.4"
 }
