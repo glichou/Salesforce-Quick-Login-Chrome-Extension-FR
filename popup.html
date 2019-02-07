@@ -3,12 +3,12 @@
       <head>
             <style>
                 body { padding: 0 15px 0 0; }
-                body, input, select { font-family: arial; font-size: 12px; }
-                a { color: #000000; text-decoration: none; }
+                body, input, select { font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+                a { color: #000000; text-decoration: none; cursor: default;}
                 img { display: none; }
 
-                a#toggleAllColumns { text-decoration: underline; }
-								.menuRow { margin-bottom: 5px; }
+                a#toggleAllColumns { text-decoration: underline; cursor: pointer;}
+                .menuRow { margin-bottom: 5px; }
 
                 /* table styles */
                 table { border: 1px solid #CCC; border-collapse: collapse; }
@@ -20,8 +20,14 @@
                 td.actionColumn a.loginLink:hover { text-decoration: underline; cursor: pointer; }
                 tr.dataRow td, tr.dataRow th { padding: 4px 5px 4px 5px; border: 1px solid #D4DADC; border-width: 0 0 1px 0; }
                 tr.highlight { background-color: #e3f3ff;}
-                td a, th a { cursor: default; }
+                th a:hover { text-decoration: underline; cursor: pointer; }
                 .off { display: none; }
+
+                #toggleLoginAsFilter {
+                    margin: 0;
+                    vertical-align: bottom;
+                    cursor: pointer;
+                }
             </style>
             <script src="jquery.min.js"></script>
             <script src="domparser.js"></script>
@@ -31,8 +37,8 @@
         <div id="menu" style="display: none;">
             <div class="menuRow">View: <span id="viewDropdown"></span></div>
             <div class="menuRow">Show: <a href="#" id="toggleAllColumns">All Columns</a></div>
-						<div class="menuRow">Filter: <input type="text" id="txtFilter" /> <span id="spFilterStatus"></span></div>
             <div class="menuRow">Login Only: <input type="checkbox" id="toggleLoginAsFilter"/></div>
+            <div class="menuRow">Filter: <input type="text" id="txtFilter" /> <span id="spFilterStatus"></span></div>
             <div class="menuRow" id="navigationButtons"></div>
         </div>
         <span id="loading">Loading...</span>

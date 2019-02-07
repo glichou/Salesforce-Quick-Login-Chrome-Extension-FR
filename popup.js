@@ -52,15 +52,12 @@ $(function()
 
 		AttachFilterHandling();
 
-    function handleSelectedTab(_TabURL)
-		{
-      sTabURL = _TabURL;
-      sDomain = sTabURL.substring(0, sTabURL.indexOf(".com")+4);
-      if (sDomain.match(/\.visual\.force\.com/)) {
-        sDomain = sDomain.match(/[^.]+\.([^.]+)\.visual\.force\.com/);
-        sDomain = "https://" + sDomain[1] + ".salesforce.com";
-      }
-      RequestUsers("");
+    function handleSelectedTab(tabUrl)
+    {
+        sTabURL = tabUrl;
+        var hostname = (new URL(tabUrl)).hostname;
+        sDomain = 'https://' + hostname;
+        RequestUsers("");
     }
 
 		function AttachFilterHandling()
@@ -100,7 +97,7 @@ $(function()
     {
         var sFilter = (sViewId !== "") ? "fcf="+sViewId+"&" : "";
         var sLsr = (Number.isInteger(startNum) ? startNum : 0);
-        var sUsersPage = sDomain+"/005?"+sFilter+"rowsperpage=" + pageSize + "&lsr=" + sLsr;
+        var sUsersPage = sDomain+"/005?isUserEntityOverride=1&"+sFilter+"rowsperpage=" + pageSize + "&lsr=" + sLsr;
         $.get(sUsersPage, function(data)
         {
             html = (new DOMParser()).parseFromString(data, "text/html");
@@ -178,16 +175,41 @@ $(function()
 
             //update login url to set target and return URL to the current url
             var sLogin = $login.attr("href");
+
             //strip off the retURL and targetURL
-            sLogin = sDomain + sLogin.substring(0, sLogin.indexOf("&retURL="));
-            sLogin += "&retURL="+encodeURI(sTabURL)+"&targetURL="+encodeURI(sTabURL);
+            var regexRetURL = /(&|\?)retURL=([^&]*)/;
+            var regexTargetURL = /(&|\?)targetURL=([^&]*)/;
+            sLogin = sLogin.replace(regexRetURL, "");
+            sLogin = sLogin.replace(regexTargetURL, "");
+
+            sLogin += sLogin.includes('?') ? '&' : '?';
+            sLogin += "isUserEntityOverride=1";
+            sLogin += "&retURL=" + encodeURIComponent(sTabURL);
+            sLogin += "&targetURL=" + encodeURIComponent(sTabURL);
+
+            sLogin = sDomain + sLogin;
+
             $login.attr("href", sLogin);
-        })
-        .click(function()
-        {
+        }).click(function() {
             //update the main browser tab (not the popup) and make the main browser tab
             //active which will close the popup
             chrome.tabs.update(null, {url: $(this).attr("href"), active: true});
+            window.close();
+            return false;
+        });
+
+        $("th a", $table).each(function() {
+            var $this = $(this);
+
+            var href = $this.attr('href');
+            if (!href.startsWith('https://') && href.startsWith('/')) {
+                $this.attr("href", sDomain + href);
+            }
+        }).click(function(){
+            //update the main browser tab (not the popup) and make the main browser tab
+            //active which will close the popup
+            chrome.tabs.update(null, {url: $(this).attr("href"), active: true});
+            window.close();
             return false;
         });
 
