@@ -6,7 +6,7 @@ var pageSize = 1000; // max size is 1000
 $(function()
 {
     chrome.tabs.getSelected(null, function(tab)
-		{
+    {
         handleSelectedTab(tab.url);
     });
 
@@ -47,15 +47,15 @@ $(function()
         lsr -= pageSize;
       }
 
-			//keep the current users width so the popup window doesn't become skinny when the table
-			//is empty and then wide again when the table is reloaded
-			$("#users").css("width", $("#users").outerWidth());
+      //keep the current users width so the popup window doesn't become skinny when the table
+      //is empty and then wide again when the table is reloaded
+      $("#users").css("width", $("#users").outerWidth());
       $("#quickLoginChrome #users").empty();
       $("#quickLoginChrome #loading").show();
       RequestUsers($ddlView.val(), lsr);
     });
 
-		AttachFilterHandling();
+    AttachFilterHandling();
 
     function handleSelectedTab(tabUrl)
     {
@@ -65,38 +65,38 @@ $(function()
         RequestUsers("");
     }
 
-		function AttachFilterHandling()
-		{
-			//case insensitive 'contains'
-			jQuery.expr[':'].containsCI = function(a, i, m) {
-			 return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
-			};
+    function AttachFilterHandling()
+    {
+      //case insensitive 'contains'
+      jQuery.expr[':'].containsCI = function(a, i, m) {
+       return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+      };
 
-			var typingTimer;
-			var doneTypingInterval = 250;
+      var typingTimer;
+      var doneTypingInterval = 250;
 
-			$("#txtFilter").keyup(function()
-			{
-				clearTimeout(typingTimer);
-				typingTimer = setTimeout(doneTyping, doneTypingInterval);
-			});
+      $("#txtFilter").keyup(function()
+      {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(doneTyping, doneTypingInterval);
+      });
 
-			function doneTyping ()
-			{
-				var sFilterText = $("#txtFilter").val();
-				$("#spFilterStatus").text("Filtering");
-				var $trData = $("div#users table.list tr.dataRow");
-				if (sFilterText != "")
-				{
-					$trData.hide().filter(":containsCI('" + sFilterText + "')").show();
-				}
-				else
-				{
-					$trData.show();
-				}
-				$("#spFilterStatus").text("");
-			}
-		}
+      function doneTyping ()
+      {
+        var sFilterText = $("#txtFilter").val();
+        $("#spFilterStatus").text("Filtering");
+        var $trData = $("div#users table.list tr.dataRow");
+        if (sFilterText != "")
+        {
+          $trData.hide().filter(":containsCI('" + sFilterText + "')").show();
+        }
+        else
+        {
+          $trData.show();
+        }
+        $("#spFilterStatus").text("");
+      }
+    }
 
     function RequestUsers(sViewId, startNum)
     {
@@ -149,7 +149,7 @@ $(function()
     }
 
     function HideColumns($table)
-		{
+    {
         //only show first x columns?
         $("tr", $table).each(function(){
             // use a class so we can hide these while toggling rows on/off
@@ -161,21 +161,21 @@ $(function()
 
     function DisplayUsers(data)
     {				
-				//reset certain menu controls
-				$("#txtFilter").val("");
-				$("#toggleLoginAsFilter").attr("checked", false);
-				
+        //reset certain menu controls
+        $("#txtFilter").val("");
+        $("#toggleLoginAsFilter").attr("checked", false);
+        
         //find the view dropdown from the manage users page
-				var $ddlView = $("select#fcf", data);
+        var $ddlView = $("select#fcf", data);
         // Removing these attribute prevents some errors in the console
         $ddlView.removeAttr("onchange");
         $("#viewDropdown").empty().append($ddlView);
         $ddlView.change(function()
         {
-						//keep the current users width so the popup window doesn't become skinny when the table
-						//is empty and then wide again when the table is reloaded
-						$("#users").css("width", $("#users").outerWidth());
-						// When we select a new set of users, clear the display
+            //keep the current users width so the popup window doesn't become skinny when the table
+            //is empty and then wide again when the table is reloaded
+            $("#users").css("width", $("#users").outerWidth());
+            // When we select a new set of users, clear the display
             $("#users").empty();
             $("#loading").show();
             RequestUsers($(this).val());
@@ -238,25 +238,25 @@ $(function()
         $("td.actionColumn:not('.loginRow')").empty();
         
         $("#toggleAllColumns").text("All Columns");
-			
-				//uncheck the Show Only Users With Login checkbox on every new load of users
-				//since it has to be clicked every time
-				//also hide the checkbox option if every user has Login links since the checkbox
-				//would not do anything
-				if ($("td.actionColumn:not(.loginRow)").length > 0)
-				{
-					$(".loginUsersOnlyRow").show();
-				}
-				else
-				{
-					$(".loginUsersOnlyRow").hide();
-				}
+      
+        //uncheck the Show Only Users With Login checkbox on every new load of users
+        //since it has to be clicked every time
+        //also hide the checkbox option if every user has Login links since the checkbox
+        //would not do anything
+        if ($("td.actionColumn:not(.loginRow)").length > 0)
+        {
+          $(".loginUsersOnlyRow").show();
+        }
+        else
+        {
+          $(".loginUsersOnlyRow").hide();
+        }
 
         $("#loading").hide();
         $("#menu").show();
-				$("#users").css("width", "auto");
+        $("#users").css("width", "auto");
 
-				$("#txtFilter").focus();
+        $("#txtFilter").focus();
 
         //set width of table to try and prevent the popup from squishing the table
         $("body").width("800");
