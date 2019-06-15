@@ -11,5 +11,5 @@
       "default_popup": "popup.html"
    },
    "permissions": [ "tabs", "https://*.salesforce.com/", "https://*.visual.force.com/", "https://*.lightning.force.com/" ],
-   "version": "1.4"
+   "version": "2"
 }
