@@ -187,7 +187,8 @@ $(function()
         $("#users").append($table);
 
         //handle login links
-        $("td.actionColumn a:contains('Login')", $table).each(function()
+        //$("td.actionColumn a:contains('Login')", $table).each(function()
+        $("td.actionColumn a:contains('Se connecter')", $table).each(function()
         {
             $login = $(this);
 
